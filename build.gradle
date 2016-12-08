@@ -1,0 +1,208 @@
+task hello{
+	doLast{
+		println 'hello world i come'
+	}
+}
+
+task wrapper(type : Wrapper){
+gradleVersion = '2.4'
+archiveBase = 'GRADLE_USER_HOME'
+archivePath = 'wrapper/dists'
+distributionBase = 'GRADLE_USER_HOME'
+distributionPath = 'wrapper/dists'
+distributionUrl =''
+}
+
+task addTaskMouldle{
+doLast{
+println '多任务执行'
+}
+
+}
+
+
+task printlnString <<{
+
+
+def name ="zhangsan"
+println "cou:${name}"
+
+
+}
+
+task printlnList <<{
+
+def numList = [1,2,3,4];
+println numList[1]
+println numList[-1]
+
+numList.each{
+println it
+}
+}
+
+
+task printMap <<{
+
+def map1  = ['width':1024,'height':720];
+
+println map1.getClass().name;
+
+println map1['width'];
+
+println map1.height
+
+
+map1.each{
+println "Key:${it.key},Value:${it.value}"
+
+}
+
+
+}
+
+
+task methodTask <<{
+methodTest(1,2);
+
+methodTest 1,2;
+
+def result = methodTest1 3,4;
+
+println 'result'+"${result}";
+
+}
+
+def methodTest(int a ,int b){
+
+println a+b;
+}
+
+def methodTest1(int a ,int b){
+
+return a+b;
+
+}
+
+
+task  closeureTest <<{
+methodClose{
+println it
+}
+
+}
+
+def methodClose(haha) {
+for(int i in 1..10){
+haha(i);
+
+
+}
+}
+
+def method2(int a,int b){
+
+if(a>b){
+rethurn a;
+}else{
+return b;
+}
+
+
+
+}
+
+
+task closeTestTwo <<{
+methodCloseTwo({k,v->
+
+println "k:${k},v:${v}"
+})
+
+}
+
+def methodCloseTwo(close){
+def map1 =["width":1024,"height":720];
+map1.each{
+close(it.key,it.value);
+}
+
+}
+
+task customTask {
+doFirst{
+println 'customTaskdoFirst'
+}
+println 'customTaskdo'
+doLast{
+println 'customTaskdolast'
+}
+}
+
+customTask.doFirst{
+
+println 'customTaskdoFirst-----'
+}
+
+tasks.addRule("该rule description "){String taskName->
+task(taskName) <<{
+println "${taskName} not exit"
+}
+
+}
+
+task  customTask2(type:MyRunnable){
+dependsOn missTask
+doFirst{
+println 'doFirst'
+}
+println 'do'
+doLast{
+println 'dolast'
+}
+}
+
+class MyRunnable extends DefaultTask{
+
+//注解的意思是 这就是任务本身要执行的方法 
+@TaskAction
+def doSelf(){
+println 'doself'
+}
+
+
+
+}
+//自定义一个属性
+ext.age = 18
+//自定义多个属性
+ext{
+name ="zhang"
+phone = 111
+}
+
+//sourcesets也可以定义属性
+
+
+task customProperty{
+println "age:${age}"
+println "name:${name}"
+println "phone:${phone}"
+
+def time = buildTime();
+println "${time}"
+
+
+}
+
+
+def buildTime(){
+def data = new Date();
+
+def formatData = data.format("yyyyMMdd");
+return formatData;
+
+
+}
+
+
